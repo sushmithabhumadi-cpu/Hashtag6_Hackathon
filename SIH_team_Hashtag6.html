@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Crop Advisory System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Poppins:wght@300;400;500;600&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #3498db;
+            --secondary-blue: #2980b9;
+            --primary-green: #2ecc71;
+            --secondary-green: #27ae60;
+            --dark-gray: #2c3e50;
+            --light-gray: #ecf0f1;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--white);
+            color: var(--dark-gray);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--dark-gray);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary-blue);
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+            color: var(--primary-green);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark-gray);
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--primary-blue);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover:after {
+            width: 100%;
+        }
+
+        .nav-links a.active {
+            color: var(--primary-blue);
+        }
+
+        .nav-links a.active:after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 7rem 0 3rem;
+            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), 
+                        url('https://images.unsplash.com/photo-1625246335525-4d3c9cae2100?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80');
+            background-size: cover;
+            background-position: center;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            color: var(--dark-gray);
+            text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.8);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            color: #444;
+            font-weight: 500;
+        }
+
+        /* Page Sections */
+        .page-section {
+            display: none;
+            padding: 5rem 0;
+        }
+
+        .page-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title:after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 3px;
+            background: var(--primary-blue);
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Forms */
+        .form-container {
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--primary-blue);
+            color: var(--white);
+            border: none;
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn:hover {
+            background: var(--secondary-blue);
+            transform: translateY(-2px);
+        }
+
+        .btn-green {
+            background: var(--primary-green);
+        }
+
+        .btn-green:hover {
+            background: var(--secondary-green);
+        }
+
+        /* Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-text {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        /* Image Gallery */
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .gallery-item {
+            border-radius: 10px;
+            overflow: hidden;
+            height: 200px;
+            position: relative;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            box-shadow: var(--shadow);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .data-table th, .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .data-table th {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            font-weight: 500;
+        }
+
+        .data-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .data-table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Upload Box */
+        .upload-box {
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            margin: 2rem 0;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .upload-box:hover {
+            border-color: var(--primary-blue);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        .result-box {
+            background: #f8f9fa;
+            border-left: 4px solid var(--primary-green);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 5px;
+        }
+        
+        /* Text Center */
+        .text-center {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        /* Crop Cards */
+        .crop-card {
+            display: flex;
+            align-items: center;
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+        }
+        
+        .crop-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .crop-icon {
+            font-size: 2.5rem;
+            margin-right: 1.5rem;
+            color: var(--primary-green);
+        }
+        
+        .crop-info {
+            flex: 1;
+        }
+        
+        .crop-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .crop-desc {
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+        
+        .crop-price {
+            font-weight: bold;
+            color: var(--primary-green);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+            }
+            
+            .nav-links {
+                margin-top: 1rem;
+            }
+            
+            .nav-links li {
+                margin: 0 0.5rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .image-gallery {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .crop-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .crop-icon {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container nav-container">
+            <div class="logo">
+                <i class="fas fa-seedling"></i>
+                <span>SmartCrop</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home" class="active nav-link">Home</a></li>
+                <li><a href="#machinery" class="nav-link">Machinery</a></li>
+                <li><a href="#marketing" class="nav-link">Marketing</a></li>
+                <li><a href="#advisory" class="nav-link">Advisory</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h1>Smart Crop Advisory System</h1>
+            <p>Empowering small and marginal farmers with AI-driven insights, modern machinery, and direct market access</p>
+        </div>
+    </section>
+
+    <!-- Home Page -->
+    <section id="home-page" class="page-section active">
+        <div class="container">
+            <h2 class="section-title">Farmer Registration</h2>
+            
+            <div class="form-container">
+                <form id="signup-form">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" class="form-control" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact">Contact Number</label>
+                        <input type="tel" id="contact" class="form-control" placeholder="Enter your phone number" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="location">Farm Location</label>
+                        <input type="text" id="location" class="form-control" placeholder="Enter your farm location" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" class="form-control" placeholder="Create a password" required>
+                    </div>
+                    <button type="submit" class="btn btn-green">Register Now</button>
+                </form>
+            </div>
+
+           
+            </div>
+        </div>
+    </section>
+
+    <!-- Machinery Page -->
+    <section id="machinery-page" class="page-section">
+        <div class="container">
+            <h2 class="section-title">Modern Agricultural Machinery</h2>
+            <p class="text-center">Rent advanced farming equipment to maximize your yield and efficiency</p>
+            
+            <div class="card-grid">
+                <div class="card">
+                    <img src="https://www.spark.ai/hubfs/John%20Deere%20Autonomous%20Tractor.jpeg" alt="Automated Tractor" class="card-img">
+                    <div class="card-content">
+                        <h3 class="card-title">Automated Tractor</h3>
+                        <p class="card-text">GPS-enabled tractor with automated steering for precision farming. Reduces labor costs and improves efficiency.</p>
+                        <p><strong>Owner Contact:</strong> ***12345</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <img src="https://cropim.com/wp-content/uploads/2023/06/blog-drone.jpeg" alt="Agricultural Drone" class="card-img">
+                    <div class="card-content">
+                        <h3 class="card-title">Agricultural Drone</h3>
+                        <p class="card-text">Multispectral imaging drone for crop health monitoring, spraying, and field analysis.</p>
+                        <p><strong>Owner Contact:</strong> ***67890</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <img src="https://honeycombes-ag.com.au/wp-content/uploads/2020/08/1725c_planter_r4d077574_large_cd22efa3aa0facab3229e78cd23a99f7e81a753c.jpg" alt="Seed Planter" class="card-img">
+                    <div class="card-content">
+                        <h3 class="card-title">Precision Seed Planter</h3>
+                        <p class="card-text">Automated seed planting machine with variable rate technology for optimal seed distribution.</p>
+                        <p><strong>Owner Contact:</strong> ***123456</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <img src="https://media.istockphoto.com/id/180513965/photo/big-green-one.jpg?s=612x612&w=0&k=20&c=C7H5_u_jTy12JzxGNtuWa5r0zhEIs5jqI7XnzzAH4HI=" alt="Harvester" class="card-img">
+                    <div class="card-content">
+                        <h3 class="card-title">Smart Harvester</h3>
+                        <p class="card-text">Advanced combine harvester with yield monitoring technology for efficient harvesting.</p>
+                        <p><strong>Owner Contact:</strong> ***98765</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <img src="https://metapress.com/wp-content/uploads/2025/02/Smart-Irrigation-How-to-Save-Water-and-Keep-Your-Garden-Thriving-1024x576.jpg" alt="Irrigation System" class="card-img">
+                    <div class="card-content">
+                        <h3 class="card-title">Smart Irrigation System</h3>
+                        <p class="card-text">Automated irrigation with soil moisture sensors for optimal water usage and conservation.</p>
+                        <p><strong>Owner Contact:</strong> ***13579</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <img src="https://www.farmfluence.in/assets/images/products/soil-testing-picture.png" alt="Soil Analyzer" class="card-img">
+                    <div class="card-content">
+                        <h3 class="card-title">Portable Soil Analyzer</h3>
+                        <p class="card-text">Instant soil health analysis with NPK detection and pH measurement for informed fertilization.</p>
+                        <p><strong>Owner Contact:</strong> ***24680</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Marketing Page -->
+    <section id="marketing-page" class="page-section">
+        <div class="container">
+            <h2 class="section-title">Direct Market Access</h2>
+            <p class="text-center">Connect directly with buyers and get the best prices for your produce</p>
+            
+            <div class="form-container">
+                <h3 class="text-center">List Your Produce for Sale</h3>
+                <form id="produce-form">
+                    <div class="form-group">
+                        <label for="crop-type">Crop Type</label>
+                        <select id="crop-type" class="form-control" required>
+                            <option value="">Select Crop Type</option>
+                            <option value="wheat">Wheat</option>
+                            <option value="rice">Rice</option>
+                            <option value="corn">Corn</option>
+                            <option value="soybean">Soybean</option>
+                            <option value="vegetables">Vegetables</option>
+                            <option value="fruits">Fruits</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity">Quantity (kg)</label>
+                        <input type="number" id="quantity" class="form-control" placeholder="Enter quantity in kg" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="quality">Quality Grade</label>
+                        <select id="quality" class="form-control" required>
+                            <option value="">Select Quality Grade</option>
+                            <option value="organic">Organic</option>
+                            <option value="premium">Premium</option>
+                            <option value="standard">Standard</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Expected Price (per kg)</label>
+                        <input type="number" id="price" class="form-control" placeholder="Enter expected price" required>
+                    </div>
+                    <button type="submit" class="btn btn-green">List My Produce</button>
+                </form>
+            </div>
+            
+            <h3 class="section-title">Current Market Prices</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Crop Type</th>
+                        <th>Average Price (₹/kg)</th>
+                        <th>Demand Level</th>
+                        <th>Best Market</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Wheat</td>
+                        <td>₹22.50</td>
+                        <td>High</td>
+                        <td>Delhi</td>
+                    </tr>
+                    <tr>
+                        <td>Rice</td>
+                        <td>₹30.75</td>
+                        <td>Medium</td>
+                        <td>Mumbai</td>
+                    </tr>
+                    <tr>
+                        <td>Corn</td>
+                        <td>₹18.20</td>
+                        <td>Low</td>
+                        <td>Hyderabad</td>
+                    </tr>
+                    <tr>
+                        <td>Soybean</td>
+                        <td>₹35.40</td>
+                        <td>High</td>
+                        <td>Indore</td>
+                    </tr>
+                    <tr>
+                        <td>Tomatoes</td>
+                        <td>₹25.80</td>
+                        <td>Very High</td>
+                        <td>Bangalore</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Advisory Page -->
+    <section id="advisory-page" class="page-section">
+        <div class="container">
+            <h2 class="section-title">Crop Advisory</h2>
+            <p class="text-center">Get personalized recommendations for your crops</p>
+            
+            <div class="form-container">
+                <h3 class="text-center">Upload Crop Image for Analysis</h3>
+                <div class="upload-box">
+                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                    <p>Click to upload an image of your crop for disease detection and analysis</p>
+                    <input type="file" id="crop-image" style="display: none;">
+                </div>
+                <button type="button" class="btn" style="width: 100%;">Analyze Image</button>
+                
+                <div class="result-box">
+                    <h4>Analysis Results:</h4>
+                    <p>Upload an image of your crop health, disease detection, and treatment recommendations.</p>
+                </div>
+            </div>
+            
+            <h3 class="section-title">Personalized Crop Recommendations</h3>
+            
+            <div class="crop-card">
+                <div class="crop-icon">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <div class="crop-info">
+                    <h4 class="crop-title">Optimal Planting Time</h4>
+                    <p class="crop-desc">Based on your location and soil conditions, the best time to plant wheat is between November 1-15.</p>
+                </div>
+            </div>
+            
+            <div class="crop-card">
+                <div class="crop-icon">
+                    <i class="fas fa-tint"></i>
+                </div>
+                <div class="crop-info">
+                    <h4 class="crop-title">Irrigation Schedule</h4>
+                    <p class="crop-desc">Water your crops every 3 days during the current season. Recommended water: 2 inches per week.</p>
+                </div>
+            </div>
+            
+            <div class="crop-card">
+                <div class="crop-icon">
+                    <i class="fas fa-pills"></i>
+                </div>
+                <div class="crop-info">
+                    <h4 class="crop-title">Fertilizer Recommendation</h4>
+                    <p class="crop-desc">Based on soil analysis, apply NPK 10:26:26 at 100 kg/acre before sowing and Urea at 50 kg/acre after first irrigation.</p>
+                </div>
+            </div>
+            
+            <div class="crop-card">
+                <div class="crop-icon">
+                    <i class="fas fa-bug"></i>
+                </div>
+                <div class="crop-info">
+                    <h4 class="crop-title">Pest Management</h4>
+                    <p class="crop-desc">Current conditions indicate high risk of aphid infestation. Apply Imidacloprid 17.8% SL at 150 ml/acre as preventive measure.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const pageSections = document.querySelectorAll('.page-section');
+            
+            // Handle navigation clicks
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all links and sections
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    pageSections.forEach(s => s.classList.remove('active'));
+                    
+                    // Add active class to clicked link
+                    this.classList.add('active');
+                    
+                    // Show corresponding section
+                    const targetId = this.getAttribute('href').substring(1) + '-page';
+                    document.getElementById(targetId).classList.add('active');
+                    
+                    // Scroll to top
+                    window.scrollTo(0, 0);
+                });
+            });
+            
+            // Form submissions
+            const signupForm = document.getElementById('signup-form');
+            if (signupForm) {
+                signupForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    alert('Registration successful! Welcome to SmartCrop.');
+                    this.reset();
+                });
+            }
+            
+            const produceForm = document.getElementById('produce-form');
+            if (produceForm) {
+                produceForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    alert('Your produce has been listed successfully! Buyers will contact you soon.');
+                    this.reset();
+                });
+            }
+            
+            // Upload box functionality
+            const uploadBox = document.querySelector('.upload-box');
+            const fileInput = document.getElementById('crop-image');
+            
+            if (uploadBox && fileInput) {
+                uploadBox.addEventListener('click', function() {
+                    fileInput.click();
+                });
+                
+                fileInput.addEventListener('change', function() {
+                    if (this.files && this.files[0]) {
+                        const resultBox = document.querySelector('.result-box');
+                        resultBox.innerHTML = `
+                            <h4>Analysis Results:</h4>
+                            <p><strong>Crop Health:</strong> 85% Healthy</p>
+                            <p><strong>Disease Detected:</strong> Minor signs of leaf rust</p>
+                            <p><strong>Recommendation:</strong> Apply fungicide containing Triadimefon at 0.1% concentration</p>
+                            <p><strong>Prevention:</strong> Ensure proper spacing between plants for air circulation</p>
+                        `;
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
